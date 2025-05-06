@@ -1,12 +1,10 @@
 import os
 import pandas as pd
 import streamlit as st
-from dotenv import load_dotenv
 from langchain_openai import ChatOpenAI
 from langchain.schema import HumanMessage
 
 # 1. 환경 변수 불러오기
-load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 
 # 2. LLM 객체 생성
