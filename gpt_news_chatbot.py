@@ -9,7 +9,7 @@ load_dotenv()
 api_key = os.getenv("OPENAI_API_KEY")
 
 # 2. 엑셀 데이터 불러오기
-excel_path = r"C:\\Users\\user\\OneDrive - visang1\\02. 비상교육\\100. newsclippings\\newsclip_db_updated.xlsx"
+excel_path = "newsclip_db_updated.xlsx"
 df = pd.read_excel(excel_path)
 df.columns = df.columns.str.strip()
 
