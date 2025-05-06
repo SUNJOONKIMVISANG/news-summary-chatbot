@@ -1,12 +1,10 @@
 import os
 import pandas as pd
 import streamlit as st
-from dotenv import load_dotenv
-from langchain_openai import ChatOpenAI
+from langchain.chat_models import ChatOpenAI
 
 # 1. 환경 변수에서 API 키 불러오기
-load_dotenv()
-api_key = os.getenv("OPENAI_API_KEY")
+api_key = st.secrets["OPENAI_API_KEY"]
 
 # 2. 엑셀 데이터 불러오기
 excel_path = "newsclip_db_updated.xlsx"
@@ -25,7 +23,11 @@ for _, row in df.iterrows():
 context_text = "\n".join(docs)
 
 # 4. GPT 모델 준비
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.3, openai_api_key=api_key)
+llm = ChatOpenAI(
+    model_name="gpt-3.5-turbo",
+    temperature=0.3,
+    openai_api_key=api_key
+)
 
 # 5. Streamlit 인터페이스
 st.set_page_config(page_title="뉴스 요약 GPT 챗봇", layout="wide")
