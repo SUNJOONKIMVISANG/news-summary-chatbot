@@ -9,12 +9,9 @@ api_key = st.secrets["OPENAI_API_KEY"]
 # 2. 엑셀 데이터 불러오기
 excel_path = "newsclip_db_updated.xlsx"
 df = pd.read_excel(excel_path)
-df.columns = df.columns.str.strip()  # 공백 제거
+df.columns = df.columns.str.strip()  # 열 이름 공백 제거
 
-# 컬럼 확인 (디버깅용, 문제 해결 후 주석 처리 가능)
-# st.write(df.columns.tolist())
-
-# 3. 뉴스 요약 텍스트를 하나의 context로 통합
+# 3. 뉴스 요약 텍스트 통합
 docs = []
 for _, row in df.iterrows():
     if isinstance(row.get("뉴스요약"), str) and row["뉴스요약"].strip():
@@ -22,22 +19,22 @@ for _, row in df.iterrows():
         title = row.get("해드라인", "")
         summary = row["뉴스요약"].strip()
         docs.append(f"[{date}] {title} : {summary}")
-
 context_text = "\n".join(docs)
 
-# 4. GPT 모델 준비
+# 4. GPT 모델 설정
 llm = ChatOpenAI(
     model_name="gpt-3.5-turbo",
     temperature=0.3,
     openai_api_key=api_key
 )
 
-# 5. Streamlit 인터페이스
+# 5. Streamlit 앱 설정
 st.set_page_config(page_title="뉴스 요약 GPT 챗봇", layout="wide")
 st.title("📰 뉴스 요약 기반 경영진 질의응답 GPT")
 
 question = st.text_input("질문을 입력하세요:", placeholder="예: 4월 교육정책 요약해줘")
 
+# 6. 질문 처리 및 응답
 if question:
     with st.spinner("GPT가 답변을 준비 중입니다..."):
         prompt = f"""
@@ -51,7 +48,20 @@ if question:
         """
         try:
             response = llm.predict(prompt)
-            st.success("답변 결과:")
-            st.markdown(response)
+
+            # 7. 질문 & 답변 출력 (HTML 스타일로 꾸미기)
+            st.markdown(
+                f"""
+                <div style='background-color: #f9f9f9; padding: 20px; border-radius: 12px;'>
+                    <h4 style='color:#333;'>💬 질문</h4>
+                    <p style='font-size:16px;'>{question}</p>
+                    <hr style="margin-top: 20px; margin-bottom: 20px;">
+                    <h4 style='color:#333;'>📘 답변</h4>
+                    <p style='font-size:16px; line-height:1.6;'>{response}</p>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
         except Exception as e:
-            st.error(f"오류 발생: {e}")
+            st.error(f"❌ 오류 발생: {e}")
