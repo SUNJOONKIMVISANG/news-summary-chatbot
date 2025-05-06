@@ -1,8 +1,5 @@
+streamlit
 pandas
 openai>=1.0.0
-streamlit
-tqdm
 langchain==0.1.17
-python-dotenv
 langchain-openai==0.0.6
-openpyxl
