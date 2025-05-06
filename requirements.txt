@@ -1,5 +1,5 @@
 streamlit
 pandas
-openai>=1.0.0
+openpyxl
 langchain==0.1.17
 langchain-openai==0.0.6
