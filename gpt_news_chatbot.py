@@ -1,7 +1,7 @@
 import os
 import pandas as pd
 import streamlit as st
-from langchain.chat_models import ChatOpenAI
+from langchain_openai import ChatOpenAI
 
 # 1. 환경 변수에서 API 키 불러오기
 api_key = st.secrets["OPENAI_API_KEY"]
