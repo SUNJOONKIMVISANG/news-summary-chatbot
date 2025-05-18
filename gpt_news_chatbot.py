@@ -2,18 +2,26 @@ import pandas as pd
 import streamlit as st
 from langchain_openai import ChatOpenAI
 
-# API 키 불러오기
+# === API 키 불러오기 ===
 api_key = st.secrets["OPENAI_API_KEY"]
 
-# GPT 모델 초기화
-llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.3, openai_api_key=api_key)
+# === GPT 모델 초기화 ===
+llm = ChatOpenAI(
+    model_name="gpt-3.5-turbo",
+    temperature=0.3,
+    api_key=api_key  # 핵심: openai_api_key → api_key 로 수정
+)
 
-# 엑셀 데이터 로드
+# === 엑셀 데이터 로드 ===
 excel_path = "newsclip_db_updated.xlsx"
-df = pd.read_excel(excel_path)
-df.columns = df.columns.str.strip()
+try:
+    df = pd.read_excel(excel_path)
+    df.columns = df.columns.str.strip()
+except Exception as e:
+    st.error(f"❌ 엑셀 파일을 불러오는 중 오류 발생: {e}")
+    st.stop()
 
-# 뉴스 요약 데이터 통합
+# === 뉴스 요약 데이터 통합 ===
 docs = []
 for _, row in df.iterrows():
     if isinstance(row.get("뉴스요약"), str) and row["뉴스요약"].strip():
@@ -23,14 +31,15 @@ for _, row in df.iterrows():
         docs.append(f"[{date}] {title} : {summary}")
 context_text = "\n".join(docs)
 
-# Streamlit UI 설정
+# === Streamlit UI 설정 ===
 st.set_page_config(page_title="뉴스 요약 GPT 챗봇", layout="wide")
 st.title("📰 뉴스 요약 기반 GPT Q&A")
+st.markdown("요약된 뉴스 내용을 기반으로 GPT에게 질문해보세요. **비상교육** 관련 기사라면 강조됩니다.")
 
-# 질문 입력
+# === 질문 입력 ===
 question = st.text_input("질문을 입력하세요:", placeholder="예: 4월 AIDT 관련 주요 뉴스는?")
 
-# 응답 처리
+# === GPT 응답 처리 ===
 if question:
     with st.spinner("GPT가 답변을 준비 중입니다..."):
         prompt = f"""
@@ -50,13 +59,13 @@ if question:
                     <h4 style='color:#333;'>💬 질문</h4>
                     <p style='font-size:16px;'>{question}</p>
                     <hr style="margin-top: 20px; margin-bottom: 20px;">
-                    <h4 style='color:#333;'>📘 답변</h4>
+                    <h4 style='color:#333;'>📘 GPT의 답변</h4>
                     <p style='font-size:16px; line-height:1.6;'>{response}</p>
                 </div>
                 """,
                 unsafe_allow_html=True
             )
         except Exception as e:
-            st.error(f"❌ 오류 발생: {e}")
-
-st.write("데이터 로드 완료. 질문을 입력하세요.")
+            st.error(f"❌ GPT 처리 중 오류 발생: {e}")
+else:
+    st.info("왼쪽 입력창에 질문을 입력해 주세요.")
