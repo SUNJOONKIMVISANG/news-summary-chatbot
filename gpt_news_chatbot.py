@@ -2,7 +2,7 @@ import os
 import pandas as pd
 import streamlit as st
 from langchain_openai import ChatOpenAI
-from langchain.embeddings import OpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 from langchain.vectorstores import Chroma
 from langchain.docstore.document import Document
 from langchain.text_splitter import CharacterTextSplitter
