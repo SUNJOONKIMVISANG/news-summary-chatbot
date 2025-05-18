@@ -1,4 +1,3 @@
-import os
 import pandas as pd
 import streamlit as st
 from langchain_openai import ChatOpenAI
@@ -6,15 +5,15 @@ from langchain_openai import ChatOpenAI
 # API 키 불러오기
 api_key = st.secrets["OPENAI_API_KEY"]
 
-# GPT 모델
+# GPT 모델 초기화
 llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0.3, openai_api_key=api_key)
 
-# 데이터 로딩
+# 엑셀 데이터 로드
 excel_path = "newsclip_db_updated.xlsx"
 df = pd.read_excel(excel_path)
 df.columns = df.columns.str.strip()
 
-# 뉴스 요약 텍스트 통합
+# 뉴스 요약 데이터 통합
 docs = []
 for _, row in df.iterrows():
     if isinstance(row.get("뉴스요약"), str) and row["뉴스요약"].strip():
@@ -24,12 +23,14 @@ for _, row in df.iterrows():
         docs.append(f"[{date}] {title} : {summary}")
 context_text = "\n".join(docs)
 
-# Streamlit 설정
+# Streamlit UI 설정
 st.set_page_config(page_title="뉴스 요약 GPT 챗봇", layout="wide")
-st.title("📰 뉴스 요약 GPT 챗봇 (간편 버전)")
+st.title("📰 뉴스 요약 기반 GPT Q&A")
 
+# 질문 입력
 question = st.text_input("질문을 입력하세요:", placeholder="예: 4월 AIDT 관련 주요 뉴스는?")
 
+# 응답 처리
 if question:
     with st.spinner("GPT가 답변을 준비 중입니다..."):
         prompt = f"""
