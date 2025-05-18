@@ -1,8 +1,8 @@
 streamlit
 pandas
 openpyxl
-langchain==0.1.14
-langchain-openai>=0.0.8
-openai>=1.3.5
-chromadb
 tiktoken
+openai==1.3.5
+langchain==0.1.17
+langchain-community==0.0.30
+chromadb==0.4.22
