@@ -2,6 +2,6 @@ streamlit
 pandas
 openpyxl
 tiktoken
-openai==1.3.8
+openai==1.11.1
 langchain==0.1.14
 langchain-openai==0.0.8
