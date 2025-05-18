@@ -58,3 +58,5 @@ if question:
             )
         except Exception as e:
             st.error(f"❌ 오류 발생: {e}")
+
+st.write("데이터 로드 완료. 질문을 입력하세요.")
